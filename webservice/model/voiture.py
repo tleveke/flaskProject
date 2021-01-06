@@ -11,7 +11,7 @@ class Voiture:
 
     def getVoitureAll(self):
         c = self.conn.cursor()
-        voiture = c.execute('SELECT * FROM voiture').fetchall()
+        voiture = c.execute('SELECT * FROM voiture order by date').fetchall()
         return voiture
 
     def getVoiture(self):

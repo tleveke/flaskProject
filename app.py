@@ -2,7 +2,7 @@ from flask import Flask, redirect, url_for
 from webservice.route.voiture import voiture_api
 from webservice.route.dashboard import dashboard_api
 
-app = Flask(__name__,static_folder='public')
+app = Flask(__name__,static_url_path='/static')
 
 
 @app.route('/')

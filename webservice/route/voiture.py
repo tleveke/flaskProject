@@ -14,23 +14,13 @@ dbVoiture = Voiture()
 @voiture_api.route('/', methods=['GET'])
 def getVoiture():  # Permet d'obtenir le dernier état de la voiture
     voitureData = dbVoiture.getVoiture()
-    vitesse = {
-        'type': 'vitesse',
-        'value': voitureData[1]
+    status = {
+        'vitesse': voitureData[1],
+        'distance': voitureData[3],
+        'nbPanneau': voitureData[4],
+        'date': voitureData[2]
     }
-    distance = {
-        'type': 'distance',
-        'value': voitureData[3]
-    }
-    panneau = {
-        'type': 'panneau',
-        'value': voitureData[4]
-    }
-    date = {
-        'type': 'date',
-        'value': voitureData[2]
-    }
-    dictionnaire = [vitesse, distance, panneau, date]
+    dictionnaire = [status]
     return jsonify(dictionnaire)
 
 
@@ -39,25 +29,17 @@ def getVoitureAll():  # Permet d'obtenir tous les états de la voiture
     voitureData = dbVoiture.getVoitureAll()
     dictionnaire = []
     for voiture in voitureData:
-        print(voiture)
-        vitesse = {
-            'type': 'vitesse',
-            'value': voiture[1]
+        status = {
+            'vitesse': voiture[1],
+            'distance': voiture[3],
+            'nbPanneau': voiture[4],
+            'date': voiture[2]
         }
-        distance = {
-            'type': 'distance',
-            'value': voiture[3]
-        }
-        panneau = {
-            'type': 'panneau',
-            'value': voiture[4]
-        }
-        date = {
-            'type': 'date',
-            'value': voiture[2]
-        }
-        dictionnaire.append([vitesse, distance, panneau, date])
-    return jsonify(dictionnaire)
+        dictionnaire.append(status)
+
+    response = jsonify(dictionnaire)
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
 
 
 @voiture_api.route('/vitesse', methods=['GET'])
@@ -90,7 +72,7 @@ def getNbPanneau():  # Permet d'obtenir le nb pannrau du dernier état de la voi
     return jsonify(dictionnaire)
 
 
-# ---------- Method PUT --------
+# ---------- Method POST --------
 
 @voiture_api.route('/', methods=['POST'])
 def addStatusVoiture():  # Pour ajouter un status de la voiture dans la bdd avec une datetime
@@ -101,6 +83,8 @@ def addStatusVoiture():  # Pour ajouter un status de la voiture dans la bdd avec
 
     return voitureRequest
 
+
+# ---------- Method PUT --------
 
 @voiture_api.route('/vitesse', methods=['PUT'])
 def setVitesse():  # Pour modifier la vitesse d'un status
