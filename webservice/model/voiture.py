@@ -9,41 +9,46 @@ class Voiture:
 
     # Function Select
 
+    def getVoitureAll(self):
+        c = self.conn.cursor()
+        voiture = c.execute('SELECT * FROM voiture').fetchall()
+        return voiture
+
     def getVoiture(self):
         c = self.conn.cursor()
-        voiture = c.execute('SELECT * FROM voiture').fetchone()
+        voiture = c.execute('SELECT * FROM voiture order by date desc').fetchone()
         print(voiture)
         return voiture
 
     def getVoitureVitesse(self):
         c = self.conn.cursor()
-        vitesse = c.execute('SELECT vitesse FROM voiture').fetchone()
+        vitesse = c.execute('SELECT vitesse FROM voiture order by date desc').fetchone()
         return vitesse[0]
 
     def getVoitureDistance(self):
         c = self.conn.cursor()
-        distance = c.execute('SELECT distance FROM voiture').fetchone()
+        distance = c.execute('SELECT distance FROM voiture order by date desc').fetchone()
         return distance[0]
 
     def getVoitureNbPanneau(self):
         c = self.conn.cursor()
-        nbPanneau = c.execute('SELECT nbPanneau FROM voiture').fetchone()
+        nbPanneau = c.execute('SELECT nbPanneau FROM voiture order by date desc').fetchone()
         return nbPanneau[0]
 
-    # Function Update
+    # Function Insert
 
-    def setVoiture(self, voiture):
+    def insertVoiture(self, voiture):
         c = self.conn.cursor()
 
-        c.execute(''' UPDATE voiture
-              SET vitesse = ? ,
-                  distance = ? ,
-                  nbPanneau = ?
-              WHERE id = ?''', voiture)
+        print(voiture)
+        c.execute(''' Insert into voiture(vitesse, distance, nbPanneau,date) 
+        values(?,?,?,?)''', voiture)
 
         self.conn.commit()
 
         c.close()
+
+    # Function Update
 
     def setVitesse(self, voiture):
         c = self.conn.cursor()
