@@ -33,7 +33,11 @@ def getVoitureAll():  # Permet d'obtenir tous les états de la voiture
             'vitesse': voiture[1],
             'distance': voiture[3],
             'nbPanneau': voiture[4],
-            'date': voiture[2]
+            'date': voiture[2],
+            'nbDemarrage': voiture[5],
+            'nbArret': voiture[6],
+            'nbDetecSuccess': voiture[7],
+            'nbDetecError': voiture[8],
         }
         dictionnaire.append(status)
 
@@ -79,7 +83,8 @@ def addStatusVoiture():  # Pour ajouter un status de la voiture dans la bdd avec
     voitureRequest = request.json
 
     dbVoiture.insertVoiture((voitureRequest['vitesse'], voitureRequest['distance']
-                             , voitureRequest['nbPanneau'], datetime.datetime.now()))
+                             , voitureRequest['nbPanneau'], datetime.datetime.now(),voitureRequest['nbDemarrage'],
+                             voitureRequest['nbArret'],voitureRequest['nbDetecError'],voitureRequest['nbDetecSuccess'] ))
 
     return voitureRequest
 

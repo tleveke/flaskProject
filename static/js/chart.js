@@ -41,7 +41,7 @@ let nbPanneau = {
 async function setupChart(status){
 
         status.forEach(element => {
-            labels.push(element['date']);
+            labels.push(formatDate(new Date(element['date'])));
             vitesseData.push(element['vitesse']);
             distanceData.push(element['distance']);
             nbPanneauData.push(element['nbPanneau']);
@@ -60,7 +60,6 @@ async function setupChart(status){
     }
 
 function chart(type) {
-
         let ctx = document.getElementById(type).getContext('2d');
 
         let data = {
@@ -98,8 +97,64 @@ function chart(type) {
 }
 
 function chartDate(type, minDate, maxDate) {
+
+    minDate = new Date( moment(minDate, 'YYYY-MM-DD').format('MM-DD-YYYY' ));
+    maxDate = new Date( moment(maxDate, 'YYYY-MM-DD').format('MM-DD-YYYY' ));
+
     let labelsDate = [];
-    labels.map(x => {if (new Date(x) > new Date(minDate) && x < new Date(maxDate)) {labelsDate.push(x)} });
+    let tabTable = [];
+    let datasets;
+    let compteur = 0;
+    labels.map(x => {
+        let datex = new Date(moment(x, 'DD-MM-YYYY').format('MM-DD-YYYY'));
+        if (datex >= minDate && datex <= maxDate) {labelsDate.push(x);tabTable.push(true)}
+        else { tabTable.push(false) }
+    });
+
+    let ctx = document.getElementById(type).getContext('2d');
+
+    let data = {
+       labels: labelsDate,
+       datasets: []
+    };
+
+    switch (type) {
+        case 'vitesse':
+            datasets = vitesse
+            typeAvg =arrAvg(datasets.data)
+            break;
+        case 'distance':
+            datasets = distance
+            typeAvg =arrAvg(datasets.data)
+            break;
+        case 'nbPanneau':
+            datasets = nbPanneau
+            typeAvg =arrAvg(datasets.data)
+            break;
+    }
+    let dataofsets = {data:[], label:datasets.label,fill:datasets.fill,borderColor:datasets.borderColor};
+    tabTable.map(x => {
+        if (x === true) {
+            dataofsets.data.push(datasets.data[compteur]);
+        }
+        compteur++;
+    });
+
+    data.datasets.push(dataofsets);
+
+    // Chart declaration:
+    new Chart(ctx, {
+        type: 'line',
+        data: data,
+        options: options
+    });
+
+
+
+    document.getElementById('moyenne').innerText = typeAvg.toString();
+
+
+
 
 }
 
@@ -118,6 +173,17 @@ function chartGenéral() {
           options: options
         });
 }
+function formatDate(date) {
+    let d = new Date(date),
+        month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = d.getFullYear();
 
+    if (month.length < 2)
+        month = '0' + month;
+    if (day.length < 2)
+        day = '0' + day;
 
+    return [day, month, year].join('-');
+}
 const arrAvg = arr => (arr.reduce((a,b) => a + b, 0) / arr.length).toFixed(2)

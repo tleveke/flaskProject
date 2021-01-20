@@ -11,28 +11,28 @@ class Voiture:
 
     def getVoitureAll(self):
         c = self.conn.cursor()
-        voiture = c.execute('SELECT * FROM voiture order by date').fetchall()
+        voiture = c.execute('SELECT * FROM etat order by date').fetchall()
         return voiture
 
     def getVoiture(self):
         c = self.conn.cursor()
-        voiture = c.execute('SELECT * FROM voiture order by date desc').fetchone()
+        voiture = c.execute('SELECT * FROM etat order by date desc').fetchone()
         print(voiture)
         return voiture
 
     def getVoitureVitesse(self):
         c = self.conn.cursor()
-        vitesse = c.execute('SELECT vitesse FROM voiture order by date desc').fetchone()
+        vitesse = c.execute('SELECT vitesse FROM etat order by date desc').fetchone()
         return vitesse[0]
 
     def getVoitureDistance(self):
         c = self.conn.cursor()
-        distance = c.execute('SELECT distance FROM voiture order by date desc').fetchone()
+        distance = c.execute('SELECT distance FROM etat order by date desc').fetchone()
         return distance[0]
 
     def getVoitureNbPanneau(self):
         c = self.conn.cursor()
-        nbPanneau = c.execute('SELECT nbPanneau FROM voiture order by date desc').fetchone()
+        nbPanneau = c.execute('SELECT nbPanneau FROM etat order by date desc').fetchone()
         return nbPanneau[0]
 
     # Function Insert
@@ -41,8 +41,8 @@ class Voiture:
         c = self.conn.cursor()
 
         print(voiture)
-        c.execute(''' Insert into voiture(vitesse, distance, nbPanneau,date) 
-        values(?,?,?,?)''', voiture)
+        c.execute(''' Insert into etat(vitesse, distance, nbPanneau,date,nbDemarrage,nbArret,nbDetecError,nbDetecSuccess) 
+        values(?,?,?,?,?,?,?,?)''', voiture)
 
         self.conn.commit()
 
@@ -53,7 +53,7 @@ class Voiture:
     def setVitesse(self, voiture):
         c = self.conn.cursor()
 
-        c.execute(''' UPDATE voiture
+        c.execute(''' UPDATE etat
               SET vitesse = ?
               WHERE id = ?''', voiture)
 
@@ -64,7 +64,7 @@ class Voiture:
     def setDistance(self, voiture):
         c = self.conn.cursor()
 
-        c.execute(''' UPDATE voiture
+        c.execute(''' UPDATE etat
               SET distance = ?
               WHERE id = ?''', voiture)
 
@@ -75,7 +75,7 @@ class Voiture:
     def setNbPanneau(self, voiture):
         c = self.conn.cursor()
 
-        c.execute(''' UPDATE voiture
+        c.execute(''' UPDATE etat
               SET nbPanneau = ?
               WHERE id = ?''', voiture)
 

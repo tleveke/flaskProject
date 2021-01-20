@@ -38,7 +38,7 @@
 axios.get('http://localhost:5000/api/voiture/all')
     .then(response => {
             setupChart(response.data).then(status => {
-                if (status) {
+                if (status[0]) {
                     chartGenéral();
                 }
             });
