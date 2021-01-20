@@ -27,3 +27,23 @@ def distance():
 @dashboard_api.route('/panneau')
 def panneau():
     return render_template('detail.html', typeChart='nbPanneau')
+
+
+@dashboard_api.route('/demarrage')
+def demarrage():
+    return render_template('detail.html', typeChart='nbDemarrage')
+
+
+@dashboard_api.route('/arret')
+def arret():
+    return render_template('detail.html', typeChart='nbArret')
+
+
+@dashboard_api.route('/succes')
+def succes():
+    return render_template('detail.html', typeChart='nbDetecSuccess')
+
+
+@dashboard_api.route('/erreur')
+def erreur():
+    return render_template('detail.html', typeChart='nbDetecError')

@@ -21,6 +21,10 @@ let labels = [];
 let vitesseData = [];
 let distanceData = [];
 let nbPanneauData = [];
+let nbDemarrageData = [];
+let nbArretData = [];
+let nbDetecSuccessData = [];
+let nbDetecErrorData = [];
 
 let vitesse = {
         label:'Vitesse',
@@ -37,6 +41,26 @@ let nbPanneau = {
         borderColor : "#89fd13",
         fill:false
 };
+let nbDemarrage = {
+        label:'nbDemarrage',
+        borderColor : "#89fd13",
+        fill:false
+};
+let nbArret = {
+        label:'nbArret',
+        borderColor : "#89fd13",
+        fill:false
+};
+let nbDetecSuccess = {
+        label:'nbDetecSuccess',
+        borderColor : "#89fd13",
+        fill:false
+};
+let nbDetecError = {
+        label:'nbDetecError',
+        borderColor : "#89fd13",
+        fill:false
+};
 
 async function setupChart(status){
 
@@ -45,11 +69,20 @@ async function setupChart(status){
             vitesseData.push(element['vitesse']);
             distanceData.push(element['distance']);
             nbPanneauData.push(element['nbPanneau']);
+            nbDemarrageData.push(element['nbDemarrage']);
+            nbArretData.push(element['nbArret']);
+            nbDetecSuccessData.push(element['nbDetecSuccess']);
+            nbDetecErrorData.push(element['nbDetecError']);
         });
 
         vitesse.data = vitesseData;
         distance.data = distanceData;
         nbPanneau.data = nbPanneauData;
+        nbDemarrage.data = nbDemarrageData;
+        nbArret.data = nbArretData;
+        nbDetecSuccess.data = nbDetecSuccessData;
+        nbDetecError.data = nbDetecErrorData;
+
 
 
 
@@ -58,43 +91,6 @@ async function setupChart(status){
 
         return [true,labels[0],labels[labels.length-1]];
     }
-
-function chart(type) {
-        let ctx = document.getElementById(type).getContext('2d');
-
-        let data = {
-          labels: labels,
-          datasets: []
-        };
-
-        let typeAvg = 0;
-
-        switch (type) {
-            case 'vitesse':
-                data.datasets.push(vitesse)
-                typeAvg = arrAvg(vitesse.data)
-
-                break;
-            case 'distance':
-                data.datasets.push(distance)
-                typeAvg= arrAvg(distance.data)
-                break;
-            case 'nbPanneau':
-                data.datasets.push(nbPanneau)
-                typeAvg =arrAvg(nbPanneau.data)
-                break;
-        }
-        // Chart declaration:
-        new Chart(ctx, {
-          type: 'line',
-          data: data,
-          options: options
-        });
-
-        document.getElementById('moyenne').innerText = typeAvg.toString();
-
-
-}
 
 function chartDate(type, minDate, maxDate) {
 
@@ -121,17 +117,27 @@ function chartDate(type, minDate, maxDate) {
     switch (type) {
         case 'vitesse':
             datasets = vitesse
-            typeAvg =arrAvg(datasets.data)
             break;
         case 'distance':
             datasets = distance
-            typeAvg =arrAvg(datasets.data)
             break;
         case 'nbPanneau':
             datasets = nbPanneau
-            typeAvg =arrAvg(datasets.data)
+            break;
+        case 'nbDemarrage':
+            datasets = nbDemarrage
+            break;
+        case 'nbArret':
+            datasets = nbArret
+            break;
+        case 'nbDetecSuccess':
+            datasets = nbDetecSuccess
+            break;
+        case 'nbDetecError':
+            datasets = nbDetecError
             break;
     }
+
     let dataofsets = {data:[], label:datasets.label,fill:datasets.fill,borderColor:datasets.borderColor};
     tabTable.map(x => {
         if (x === true) {
@@ -139,6 +145,7 @@ function chartDate(type, minDate, maxDate) {
         }
         compteur++;
     });
+    typeAvg =arrAvg(dataofsets.data)
 
     data.datasets.push(dataofsets);
 

@@ -40,6 +40,12 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js" integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ==" crossorigin="anonymous"></script>
 <script>
 
+    function callChartDate(type,date1,date2) {
+       chartDate(type,date1,date2) ;
+
+    }
+
+
     axios.get('http://localhost:5000/api/voiture/all')
     .then(response => {
             setupChart(response.data).then(response => {
@@ -49,17 +55,17 @@
                     let calendar = flatpickr(document.getElementById("date1"), {
                         minDate: minDate,maxDate: maxDate,defaultDate:minDate,
                         onChange: function(selectedDates, dateStr, instance) {
-                            chartDate("{{ typeChart }}",dateStr,document.getElementById("date2").value) ;
+                            callChartDate("{{ typeChart }}",dateStr,document.getElementById("date2").value) ;
                         },
                     });
                     let calendar2 = flatpickr(document.getElementById("date2"), {
                         minDate: minDate,maxDate: maxDate,defaultDate:maxDate,
                         onChange: function(selectedDates, dateStr, instance) {
-                            chartDate("{{ typeChart }}",document.getElementById("date1").value,dateStr) ;
+                            callChartDate("{{ typeChart }}",document.getElementById("date1").value,dateStr) ;
                         },
                     });
 
-                    chart("{{ typeChart }}")
+                    callChartDate("{{ typeChart }}",document.getElementById("date1").value,document.getElementById("date2").value) ;
 
 
                 }
