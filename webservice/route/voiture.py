@@ -81,7 +81,7 @@ def getNbPanneau():  # Permet d'obtenir le nb pannrau du dernier état de la voi
 @voiture_api.route('/', methods=['POST'])
 def addStatusVoiture():  # Pour ajouter un status de la voiture dans la bdd avec une datetime
     voitureRequest = request.json
-
+    print(voitureRequest);
     dbVoiture.insertVoiture((voitureRequest['vitesse'], voitureRequest['distance']
                              , voitureRequest['nbPanneau'], datetime.datetime.now(),voitureRequest['nbDemarrage'],
                              voitureRequest['nbArret'],voitureRequest['nbDetecError'],voitureRequest['nbDetecSuccess'] ))
