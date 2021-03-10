@@ -48,6 +48,17 @@ class Voiture:
 
         c.close()
 
+    def insertVoitureDetection(self, voiture):
+        c = self.conn.cursor()
+
+        print(voiture)
+        c.execute(''' Insert into etat(date,nbDetecError,nbDetecSuccess) 
+        values(?,?,?)''', voiture)
+
+        self.conn.commit()
+
+        c.close()
+
     # Function Update
 
     def setVitesse(self, voiture):

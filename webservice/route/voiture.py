@@ -89,6 +89,15 @@ def addStatusVoiture():  # Pour ajouter un status de la voiture dans la bdd avec
     return voitureRequest
 
 
+@voiture_api.route('/detec', methods=['POST'])
+def addDetecVoiture():  # Pour ajouter un status de la voiture dans la bdd avec une datetime
+    voitureRequest = request.json
+    print(voitureRequest);
+    dbVoiture.insertVoitureDetection((datetime.datetime.now(), voitureRequest['nbDetecError'],voitureRequest['nbDetecSuccess'] ))
+
+    return voitureRequest
+
+
 # ---------- Method PUT --------
 
 @voiture_api.route('/vitesse', methods=['PUT'])
