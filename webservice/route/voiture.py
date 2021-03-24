@@ -25,7 +25,8 @@ def getVoiture():  # Permet d'obtenir le dernier état de la voiture
         'nbDetecError': voitureData[8],
         'temperature': voitureData[9],
         'hygrometrie': voitureData[10],
-        'luminosite': voitureData[11]
+        'luminosite': voitureData[11],
+        'proximite': voitureData[12]
     }
     dictionnaire = [status]
     return jsonify(dictionnaire)
@@ -47,7 +48,8 @@ def getVoitureAll():  # Permet d'obtenir tous les états de la voiture
             'nbDetecError': voiture[8],
             'temperature': voiture[9],
             'hygrometrie': voiture[10],
-            'luminosite': voiture[11]
+            'luminosite': voiture[11],
+            'proximite': voiture[12]
         }
         dictionnaire.append(status)
 
@@ -124,17 +126,29 @@ def getLuminosite():  # Permet d'obtenir la luminosite du dernier état de la vo
         )
     return jsonify(array_luminosite)
 
+@voiture_api.route('/all_proximite', methods=['GET'])
+def get_proximite():
+    proximite = dbVoiture.get_voiture_all_proximite()
+    array_proximite = []
+    for proxi_individuelle in proximite:
+        array_proximite.append(
+            {
+                'proximite': proxi_individuelle[0],
+                'date': proxi_individuelle[1]
+            }
+        )
+    return jsonify(array_proximite)
 
 # ---------- Method POST --------
 
 @voiture_api.route('/', methods=['POST'])
 def addStatusVoiture():  # Pour ajouter un status de la voiture dans la bdd avec une datetime
     voitureRequest = request.json
-    print(voitureRequest);
     dbVoiture.insertVoiture((voitureRequest['vitesse'], voitureRequest['distance']
                              , voitureRequest['nbPanneau'], datetime.datetime.now(),voitureRequest['nbDemarrage'],
                              voitureRequest['nbArret'],voitureRequest['nbDetecError'],voitureRequest['nbDetecSuccess'],
-                             voitureRequest['temperature'],voitureRequest['hygrometrie'],voitureRequest['luminosite'] ))
+                             voitureRequest['temperature'],voitureRequest['hygrometrie'],voitureRequest['luminosite'],
+                             voitureRequest['proximite']))
 
     return voitureRequest
 
@@ -181,7 +195,8 @@ def mockStatus():  # Pour ajouter un status de la voiture dans la bdd avec une d
         "nbDetecSucces": 2,
         "temperature": 15,
         "hygrometrie": 50,
-        "luminosite": 15
+        "luminosite": 15,
+        "proximite": 198
     }, {
         "vitesse": 12.3,
         "distance": 75,
@@ -193,7 +208,8 @@ def mockStatus():  # Pour ajouter un status de la voiture dans la bdd avec une d
         "nbDetecSucces": 2,
         "temperature": 17,
         "hygrometrie": 50,
-        "luminosite": 15
+        "luminosite": 15,
+        "proximite": 199
     }, {
         "vitesse": 29.2,
         "distance": 52,
@@ -205,8 +221,8 @@ def mockStatus():  # Pour ajouter un status de la voiture dans la bdd avec une d
         "nbDetecSucces": 2,
         "temperature": 15,
         "hygrometrie": 50,
-        "luminosite": 15
-
+        "luminosite": 15,
+        "proximite": 214
     }, {
         "vitesse": 17.6,
         "distance": 88,
@@ -218,7 +234,8 @@ def mockStatus():  # Pour ajouter un status de la voiture dans la bdd avec une d
         "nbDetecSucces": 2,
         "temperature": 15,
         "hygrometrie": 50,
-        "luminosite": 15
+        "luminosite": 15,
+        "proximite": 230
     }, {
         "vitesse": 15.8,
         "distance": 71,
@@ -230,7 +247,8 @@ def mockStatus():  # Pour ajouter un status de la voiture dans la bdd avec une d
         "nbDetecSucces": 2,
         "temperature": 12,
         "hygrometrie": 50,
-        "luminosite": 15
+        "luminosite": 15,
+        "proximite": 145
     }, {
         "vitesse": 27.7,
         "distance": 42,
@@ -242,7 +260,8 @@ def mockStatus():  # Pour ajouter un status de la voiture dans la bdd avec une d
         "nbDetecSucces": 2,
         "temperature": 17,
         "hygrometrie": 50,
-        "luminosite": 15
+        "luminosite": 15,
+        "proximite": 19
     }, {
         "vitesse": 16.0,
         "distance": 20,
@@ -254,7 +273,8 @@ def mockStatus():  # Pour ajouter un status de la voiture dans la bdd avec une d
         "nbDetecSucces": 2,
         "temperature": 20,
         "hygrometrie": 50,
-        "luminosite": 15
+        "luminosite": 15,
+        "proximite": 98
     }, {
         "vitesse": 38.5,
         "distance": 74,
@@ -266,7 +286,8 @@ def mockStatus():  # Pour ajouter un status de la voiture dans la bdd avec une d
         "nbDetecSucces": 2,
         "temperature": 20,
         "hygrometrie": 50,
-        "luminosite": 15
+        "luminosite": 15,
+        "proximite": 114
     }, {
         "vitesse": 30.0,
         "distance": 26,
@@ -278,7 +299,8 @@ def mockStatus():  # Pour ajouter un status de la voiture dans la bdd avec une d
         "nbDetecSucces": 2,
         "temperature": 25,
         "hygrometrie": 50,
-        "luminosite": 15
+        "luminosite": 15,
+        "proximite": 63
     }, {
         "vitesse": 12.7,
         "distance": 53,
@@ -290,7 +312,8 @@ def mockStatus():  # Pour ajouter un status de la voiture dans la bdd avec une d
         "nbDetecSucces": 2,
         "temperature": 30,
         "hygrometrie": 50,
-        "luminosite": 15
+        "luminosite": 15,
+        "proximite": 243
     }, {
         "vitesse": 13.4,
         "distance": 86,
@@ -302,7 +325,8 @@ def mockStatus():  # Pour ajouter un status de la voiture dans la bdd avec une d
         "nbDetecSucces": 2,
         "temperature": 35,
         "hygrometrie": 50,
-        "luminosite": 15
+        "luminosite": 15,
+        "proximite": 201
     }, {
         "vitesse": 28.5,
         "distance": 63,
@@ -314,7 +338,8 @@ def mockStatus():  # Pour ajouter un status de la voiture dans la bdd avec une d
         "nbDetecSucces": 2,
         "temperature": 35,
         "hygrometrie": 60,
-        "luminosite": 15
+        "luminosite": 15,
+        "proximite": 102
     }, {
         "vitesse": 29.0,
         "distance": 67,
@@ -326,7 +351,8 @@ def mockStatus():  # Pour ajouter un status de la voiture dans la bdd avec une d
         "nbDetecSucces": 2,
         "temperature": 35,
         "hygrometrie": 70,
-        "luminosite": 15
+        "luminosite": 15,
+        "proximite": 168
     }, {
         "vitesse": 14.7,
         "distance": 72,
@@ -338,7 +364,8 @@ def mockStatus():  # Pour ajouter un status de la voiture dans la bdd avec une d
         "nbDetecSucces": 2,
         "temperature": 35,
         "hygrometrie": 70,
-        "luminosite": 15
+        "luminosite": 15,
+        "proximite": 194
     }, {
         "vitesse": 30.7,
         "distance": 43,
@@ -350,7 +377,8 @@ def mockStatus():  # Pour ajouter un status de la voiture dans la bdd avec une d
         "nbDetecSucces": 2,
         "temperature": 35,
         "hygrometrie": 70,
-        "luminosite": 20
+        "luminosite": 20,
+        "proximite": 216
     }, {
         "vitesse": 15.2,
         "distance": 74,
@@ -362,7 +390,8 @@ def mockStatus():  # Pour ajouter un status de la voiture dans la bdd avec une d
         "nbDetecSucces": 2,
         "temperature": 35,
         "hygrometrie": 70,
-        "luminosite": 5
+        "luminosite": 5,
+        "proximite": 168
     }, {
         "vitesse": 33.7,
         "distance": 40,
@@ -374,7 +403,8 @@ def mockStatus():  # Pour ajouter un status de la voiture dans la bdd avec une d
         "nbDetecSucces": 2,
         "temperature": 45,
         "hygrometrie": 70,
-        "luminosite": 5
+        "luminosite": 5,
+        "proximite": 215
     }, {
         "vitesse": 19.4,
         "distance": 21,
@@ -386,7 +416,8 @@ def mockStatus():  # Pour ajouter un status de la voiture dans la bdd avec une d
         "nbDetecSucces": 2,
         "temperature": 45,
         "hygrometrie": 70,
-        "luminosite": 5
+        "luminosite": 5,
+        "proximite": 57
     }, {
         "vitesse": 22.4,
         "distance": 83,
@@ -398,7 +429,8 @@ def mockStatus():  # Pour ajouter un status de la voiture dans la bdd avec une d
         "nbDetecSucces": 2,
         "temperature": 45,
         "hygrometrie": 100,
-        "luminosite": 5
+        "luminosite": 5,
+        "proximite": 208
     }, {
         "vitesse": 35.4,
         "distance": 66,
@@ -410,7 +442,8 @@ def mockStatus():  # Pour ajouter un status de la voiture dans la bdd avec une d
         "nbDetecSucces": 2,
         "temperature": 45,
         "hygrometrie": 100,
-        "luminosite": 5
+        "luminosite": 5,
+        "proximite": 183
     }, {
         "vitesse": 21.9,
         "distance": 15,
@@ -422,7 +455,8 @@ def mockStatus():  # Pour ajouter un status de la voiture dans la bdd avec une d
         "nbDetecSucces": 2,
         "temperature": 45,
         "hygrometrie": 10,
-        "luminosite": 5
+        "luminosite": 5,
+        "proximite": 56
     }, {
         "vitesse": 34.7,
         "distance": 100,
@@ -434,7 +468,8 @@ def mockStatus():  # Pour ajouter un status de la voiture dans la bdd avec une d
         "nbDetecSucces": 2,
         "temperature": 30,
         "hygrometrie": 10,
-        "luminosite": 5
+        "luminosite": 5,
+        "proximite": 72
     }, {
         "vitesse": 25.1,
         "distance": 42,
@@ -446,7 +481,8 @@ def mockStatus():  # Pour ajouter un status de la voiture dans la bdd avec une d
         "nbDetecSucces": 2,
         "temperature": 30,
         "hygrometrie": 10,
-        "luminosite": 5
+        "luminosite": 5,
+        "proximite": 96
     }, {
         "vitesse": 23.1,
         "distance": 16,
@@ -458,7 +494,8 @@ def mockStatus():  # Pour ajouter un status de la voiture dans la bdd avec une d
         "nbDetecSucces": 2,
         "temperature": 30,
         "hygrometrie": 10,
-        "luminosite": 5
+        "luminosite": 5,
+        "proximite": 54
     }, {
         "vitesse": 29.4,
         "distance": 12,
@@ -470,7 +507,8 @@ def mockStatus():  # Pour ajouter un status de la voiture dans la bdd avec une d
         "nbDetecSucces": 2,
         "temperature": 30,
         "hygrometrie": 20,
-        "luminosite": 5
+        "luminosite": 5,
+        "proximite": 163
     }, {
         "vitesse": 31.9,
         "distance": 58,
@@ -482,7 +520,8 @@ def mockStatus():  # Pour ajouter un status de la voiture dans la bdd avec une d
         "nbDetecSucces": 2,
         "temperature": 40,
         "hygrometrie": 20,
-        "luminosite": 5
+        "luminosite": 5,
+        "proximite": 83
     }, {
         "vitesse": 27.2,
         "distance": 99,
@@ -494,7 +533,8 @@ def mockStatus():  # Pour ajouter un status de la voiture dans la bdd avec une d
         "nbDetecSucces": 2,
         "temperature": 20,
         "hygrometrie": 20,
-        "luminosite": 10
+        "luminosite": 10,
+        "proximite": 145
     }, {
         "vitesse": 31.3,
         "distance": 61,
@@ -506,7 +546,8 @@ def mockStatus():  # Pour ajouter un status de la voiture dans la bdd avec une d
         "nbDetecSucces": 2,
         "temperature": 20,
         "hygrometrie": 15,
-        "luminosite": 15
+        "luminosite": 15,
+        "proximite": 238
     }, {
         "vitesse": 32.2,
         "distance": 71,
@@ -518,7 +559,8 @@ def mockStatus():  # Pour ajouter un status de la voiture dans la bdd avec une d
         "nbDetecSucces": 2,
         "temperature": 20,
         "hygrometrie": 25,
-        "luminosite": 15
+        "luminosite": 15,
+        "proximite": 196
     }, {
         "vitesse": 25.2,
         "distance": 3,
@@ -530,11 +572,11 @@ def mockStatus():  # Pour ajouter un status de la voiture dans la bdd avec une d
         "nbDetecSucces": 2,
         "temperature": 20,
         "hygrometrie": 50,
-        "luminosite": 25
+        "luminosite": 25,
+        "proximite": 203
     }]
 
     for voiture in voitureRequest:
-        print(voiture)
         dbVoiture.insertVoiture((voiture['vitesse'], voiture['distance']
                              , voiture['nbPanneau'], datetime.datetime.now(),voiture['nbDemarrage'],
                                  voiture['nbArret'],voiture['nbDetecError'],voiture['nbDetecSucces'],

@@ -52,6 +52,10 @@ class Voiture:
         luminosite = c.execute('SELECT luminosite FROM etat order by date desc').fetchone()
         return luminosite[0]
 
+    def get_voiture_proximite(self):
+        proxi = self.conn.cursor()
+        proximite = proxi.execute('SELECT proximite FROM etat order by date desc').fetchone()
+        return proximite[0]
 
     def get_voiture_all_temperature(self):
         c = self.conn.cursor()
@@ -68,14 +72,18 @@ class Voiture:
         luminosite = c.execute('SELECT luminosite, date FROM etat order by date desc').fetchall()
         return luminosite
 
+    def get_voiture_all_proximite(self):
+        proxi = self.conn.cursor()
+        proximite = proxi.execute('SELECT proximite, date FROM etat order by date desc').fetchall()
+        return proximite
+
     # Function Insert
 
     def insertVoiture(self, voiture):
         c = self.conn.cursor()
 
-        print(voiture)
-        c.execute(''' Insert into etat(vitesse, distance, nbPanneau,date,nbDemarrage,nbArret,nbDetecError,nbDetecSuccess, temperature, hygrometrie, luminosite) 
-        values(?,?,?,?,?,?,?,?,?,?,?)''', voiture)
+        c.execute(''' Insert into etat(vitesse, distance, nbPanneau,date,nbDemarrage,nbArret,nbDetecError,nbDetecSuccess,temperature,hygrometrie,luminosite,proximite) 
+        values(?,?,?,?,?,?,?,?,?,?,?,?)''', voiture)
 
         self.conn.commit()
 
