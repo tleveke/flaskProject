@@ -4,7 +4,7 @@ var typeChart = document.currentScript.getAttribute('typeChart');
 console.log("typeChart")
 console.log(typeChart)
 
-axios.get('http://10.44.17.198:5000/api/voiture/all_' + typeChart)
+axios.get('http://localhost:5000/api/voiture/' + typeChart)
     .then(response => {
             data = []
             for (let i = 0; i <= 50 && i < response.data.length; i++) {

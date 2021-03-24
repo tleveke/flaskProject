@@ -46,7 +46,7 @@
     }
 
 
-    axios.get('http://10.44.17.198:5000/api/voiture/all')
+    axios.get('http://localhost:5000/api/voiture/all')
     .then(response => {
             setupChart(response.data).then(response => {
                 if (response[0]) {

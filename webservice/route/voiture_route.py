@@ -1,170 +1,46 @@
 from flask import Blueprint, jsonify, request
 import datetime
 
-from webservice.model.voiture import Voiture
+from webservice.services.voiture_service import Voiture_service
 
 voiture_api = Blueprint('voiture_api', __name__)
 vitesseKmH = 0
 distanceKm = 0
 nbPanneau = 0
-dbVoiture = Voiture()
+dbVoiture = Voiture_service()
 
 
 # ---------- Method GET -----
-@voiture_api.route('/', methods=['GET'])
-def getVoiture():  # Permet d'obtenir le dernier état de la voiture
-    voitureData = dbVoiture.getVoiture()
-    status = {
-        'vitesse': voitureData[1],
-        'distance': voitureData[3],
-        'nbPanneau': voitureData[4],
-        'date': voitureData[2],
-        'nbDemarrage': voitureData[5],
-        'nbArret': voitureData[6],
-        'nbDetecSuccess': voitureData[7],
-        'nbDetecError': voitureData[8],
-        'temperature': voitureData[9],
-        'hygrometrie': voitureData[10],
-        'luminosite': voitureData[11]
-    }
-    dictionnaire = [status]
-    return jsonify(dictionnaire)
-
 
 @voiture_api.route('/all', methods=['GET'])
-def getVoitureAll():  # Permet d'obtenir tous les états de la voiture
-    voitureData = dbVoiture.getVoitureAll()
+def get_voiture_all():  # Permet d'obtenir tous les états de la voiture
+    voiture_data = dbVoiture.get_voiture_all()
     dictionnaire = []
-    for voiture in voitureData:
-        status = {
-            'vitesse': voiture[1],
-            'distance': voiture[3],
-            'nbPanneau': voiture[4],
-            'date': voiture[2],
-            'nbDemarrage': voiture[5],
-            'nbArret': voiture[6],
-            'nbDetecSuccess': voiture[7],
-            'nbDetecError': voiture[8],
-            'temperature': voiture[9],
-            'hygrometrie': voiture[10],
-            'luminosite': voiture[11]
-        }
-        dictionnaire.append(status)
+    for voiture in voiture_data:
+        dictionnaire.append(voiture.serialized)
 
     response = jsonify(dictionnaire)
     response.headers.add('Access-Control-Allow-Origin', '*')
     return response
 
 
-@voiture_api.route('/vitesse', methods=['GET'])
-def getVitesse():  # Permet d'obtenir la vitesse du dernier état de la voiture
-    vitesseKmH = dbVoiture.getVoitureVitesse()
-    dictionnaire = {
-        'type': 'vitesse',
-        'value': vitesseKmH
-    }
-    return jsonify(dictionnaire)
+@voiture_api.route('/<string:col>', methods=['GET'])
+def get_voiture_column(col):  # Permet d'obtenir tous les états de la voiture
+    voiture_data = dbVoiture.get_voiture_all()
+    dictionnaire = []
+    for voiture in voiture_data:
+        voiture_serialized = voiture.serialized
+        dictionnaire.append({"date": voiture_serialized.get('date'), col: voiture_serialized.get(col,0)})
 
+    response = jsonify(dictionnaire)
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
 
-@voiture_api.route('/distance', methods=['GET'])
-def getDistance():  # Permet d'obtenir la distance du dernier état de la voiture
-    distanceKm = dbVoiture.getVoitureDistance()
-    dictionnaire = {
-        'type': 'distance',
-        'value': distanceKm
-    }
-    return jsonify(dictionnaire)
-
-
-@voiture_api.route('/panneau', methods=['GET'])
-def getNbPanneau():  # Permet d'obtenir le nb pannrau du dernier état de la voiture
-    nbPanneau = dbVoiture.getVoitureNbPanneau()
-    dictionnaire = {
-        'type': 'nbPanneau',
-        'value': nbPanneau
-    }
-    return jsonify(dictionnaire)
-
-@voiture_api.route('/all_temperature', methods=['GET'])
-def getTemperature():  # Permet d'obtenir les temperatures de la voiture
-    temperature = dbVoiture.get_voiture_all_temperature()
-    array_temperature = []
-    for temp_individuelle in temperature :
-        array_temperature.append(
-            {
-                'temperature': temp_individuelle[0],
-                'date': temp_individuelle[1]
-            }
-        )
-    return jsonify(array_temperature)
-
-@voiture_api.route('/all_hygrometrie', methods=['GET'])
-def getHygrometrie():  # Permet d'obtenir l'hygrometrie du dernier état de la voiture
-    hygrometrie = dbVoiture.getVoiture_all_hygrometrie()
-    array_hygrometrie = []
-    for hygro_individuelle in hygrometrie:
-        array_hygrometrie.append(
-            {
-                'hygrometrie': hygro_individuelle[0],
-                'date': hygro_individuelle[1]
-            }
-        )
-    return jsonify(array_hygrometrie)
-
-@voiture_api.route('/all_luminosite', methods=['GET'])
-def getLuminosite():  # Permet d'obtenir la luminosite du dernier état de la voiture
-    luminosite = dbVoiture.getVoiture_all_luminosite()
-    array_luminosite = []
-    for lumi_individuelle in luminosite:
-        array_luminosite.append(
-            {
-                'luminosite': lumi_individuelle[0],
-                'date': lumi_individuelle[1]
-            }
-        )
-    return jsonify(array_luminosite)
-
-
-# ---------- Method POST --------
 
 @voiture_api.route('/', methods=['POST'])
-def addStatusVoiture():  # Pour ajouter un status de la voiture dans la bdd avec une datetime
+def post_voiture():  # Pour ajouter un status de la voiture dans la bdd avec une datetime
     voitureRequest = request.json
-    print(voitureRequest);
-    dbVoiture.insertVoiture((voitureRequest['vitesse'], voitureRequest['distance']
-                             , voitureRequest['nbPanneau'], datetime.datetime.now(),voitureRequest['nbDemarrage'],
-                             voitureRequest['nbArret'],voitureRequest['nbDetecError'],voitureRequest['nbDetecSuccess'],
-                             voitureRequest['temperature'],voitureRequest['hygrometrie'],voitureRequest['luminosite'] ))
-
-    return voitureRequest
-
-
-# ---------- Method PUT --------
-
-@voiture_api.route('/vitesse', methods=['PUT'])
-def setVitesse():  # Pour modifier la vitesse d'un status
-    voitureRequest = request.json
-
-    dbVoiture.setVoiture((voitureRequest['vitesse'], voitureRequest['id']))
-
-    return voitureRequest
-
-
-@voiture_api.route('/distance', methods=['PUT'])
-def setDistance():  # Pour modifier la distance d'un status
-    voitureRequest = request.json
-
-    dbVoiture.setVoiture((voitureRequest['distance'], voitureRequest['id']))
-
-    return voitureRequest
-
-
-@voiture_api.route('/nbPanneau', methods=['PUT'])
-def setNbPanneau():  # Pour modifier le nb de panneaux d'un status
-    voitureRequest = request.json
-
-    dbVoiture.setVoiture((voitureRequest['nbPanneau'], voitureRequest['id']))
-
+    dbVoiture.insert_voiture(voitureRequest)
     return voitureRequest
 
 
@@ -526,7 +402,7 @@ def mockStatus():  # Pour ajouter un status de la voiture dans la bdd avec une d
         "date": "2020-12-20 14:23:47",
         "nbDemarrage": 2,
         "nbArret": 2,
-        "nbDetecError":2,
+        "nbDetecError": 2,
         "nbDetecSucces": 2,
         "temperature": 20,
         "hygrometrie": 50,
@@ -536,7 +412,7 @@ def mockStatus():  # Pour ajouter un status de la voiture dans la bdd avec une d
     for voiture in voitureRequest:
         print(voiture)
         dbVoiture.insertVoiture((voiture['vitesse'], voiture['distance']
-                             , voiture['nbPanneau'], datetime.datetime.now(),voiture['nbDemarrage'],
-                                 voiture['nbArret'],voiture['nbDetecError'],voiture['nbDetecSucces'],
-                                 voiture['temperature'],voiture['hygrometrie'],voiture['luminosite']))
+                                 , voiture['nbPanneau'], datetime.datetime.now(), voiture['nbDemarrage'],
+                                 voiture['nbArret'], voiture['nbDetecError'], voiture['nbDetecSucces'],
+                                 voiture['temperature'], voiture['hygrometrie'], voiture['luminosite']))
     return "Fait"
